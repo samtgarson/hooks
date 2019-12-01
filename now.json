@@ -12,6 +12,7 @@
 		"WEBHOOK_SECRET": "@webhook-secret"
   },
   "routes": [
-    { "handle": "filesystem" }
+    { "src": "/home-status", "dest": "/api/home-status.ts" },
+    { "src": "/.*", "status": 302, "headers": { "Location": "https:github.com/samtgarson/hooks" } }
   ]
 }
