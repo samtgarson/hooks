@@ -14,6 +14,10 @@ interface RequestBody {
   secret: string;
 }
 
+interface HomeStatusRequest extends NowRequest {
+  body: RequestBody
+}
+
 type EnteredOrExited = 'entered' | 'exited'
 type User = 'Sam' | 'Gabrielle'
 
@@ -64,8 +68,8 @@ const updateStatus = async (user: string, status: EnteredOrExited) => {
   }
 }
 
-module.exports = logger(async (req: NowRequest, res: NowResponse) => {
-  const { user, secret, status } = req.body as RequestBody || {}
+module.exports = logger(async (req: HomeStatusRequest, res: NowResponse) => {
+  const { user, secret, status } = req.body
 
   if (secret !== process.env.WEBHOOK_SECRET) return res
     .status(401)
