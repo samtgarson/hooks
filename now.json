@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "name": "hooks",
+  "alias": [
+    "hooks.samgarson.com"
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "AIRTABLE_API_KEY": "@airtable-api-key",
+    "AIRTABLE_ENDPOINT_URL": "https://api.airtable.com",
+    "MAKER_URL": "https://maker.ifttt.com/trigger/{event}/with/key/Kw8GhsZql-Lk2_ekHF2FH",
+		"WEBHOOK_SECRET": "@webhook-secret"
+  },
+  "routes": [
+    { "handle": "filesystem" }
+  ]
+}
