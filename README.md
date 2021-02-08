@@ -1,6 +1,8 @@
+🪝
+
 **hooks**_—Webhooks for personal projects_
 
-A repository of webook handlers for personal projects, deployed at `hooks.samgarson.com` using [Zeit Now](https://now.sh).
+A repository of webook handlers for personal projects, deployed at `hooks.samgarson.com` using [Vercel](https://vercel.com).
 
 ## Hooks
 

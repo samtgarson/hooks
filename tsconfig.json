@@ -1,9 +1,26 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "esnext",
-    "sourceMap": true,
+    "target": "ES5",
+    "lib": ["ESNext"],
     "strict": true,
-    "esModuleInterop": true
-  }
+    "strictNullChecks": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "typeRoots": ["node_modules/@types", "types/stubs"],
+    "baseUrl": "."
+  },
+  "exclude": [
+    "node_modules",
+    "test"
+  ],
+  "include": [
+    "**/*.ts",
+    "**/*.tsx"
+  ]
 }

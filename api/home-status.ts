@@ -1,7 +1,7 @@
 import Airtable, { Response, FieldSet } from 'airtable'
-import { NowRequest, NowResponse } from '@now/node'
+import { VercelRequest, VercelResponse } from '@vercel/node'
 import axios from 'axios'
-import logger from './_utils/logger'
+import endpoint from 'lib/endpoint'
 
 interface HomeStatusFields extends FieldSet {
   'Home now?': boolean
@@ -14,7 +14,7 @@ interface RequestBody {
   secret: string;
 }
 
-interface HomeStatusRequest extends NowRequest {
+interface HomeStatusRequest extends VercelRequest {
   body: RequestBody
 }
 
@@ -68,12 +68,8 @@ const updateStatus = async (user: string, status: EnteredOrExited) => {
   }
 }
 
-module.exports = logger(async (req: HomeStatusRequest, res: NowResponse) => {
-  const { user, secret, status } = req.body
-
-  if (secret !== process.env.WEBHOOK_SECRET) return res
-    .status(401)
-    .send({ error: 'Not Authorized' })
+export default endpoint(async (req: HomeStatusRequest, res: VercelResponse) => {
+  const { user, status } = req.body
 
   if (!user || !status) return res
     .status(400)
