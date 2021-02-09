@@ -13,7 +13,9 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "typeRoots": ["node_modules/@types", "types/stubs"],
-    "baseUrl": "."
+    "baseUrl": ".",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
   },
   "exclude": [
     "node_modules",

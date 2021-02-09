@@ -9,9 +9,9 @@ interface HomeStatusFields extends FieldSet {
 }
 
 interface RequestBody {
-  status: EnteredOrExited;
-  user: User;
-  secret: string;
+  status: EnteredOrExited
+  user: User
+  secret: string
 }
 
 interface HomeStatusRequest extends VercelRequest {
