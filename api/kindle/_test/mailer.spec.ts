@@ -12,17 +12,17 @@ describe('Mailer', () => {
 
   it('sends a mail', () => {
     const mailer = new Mailer(mockTransport)
-    const title = 'title'
-    const body = 'body'
+    const title = 'i am a title'
+    const body = 'i am body'
 
     mailer.sendEmail(title, body)
 
     expect(mockTransport.sendMail).toHaveBeenCalledWith({
       attachments: [
         {
-          content: "body",
+          content: body,
           contentType: "text/html",
-          filename: "title"
+          filename: title
         }
       ],
       from: "robot@samgarson.com",

@@ -1,5 +1,5 @@
 import Airtable, { Response, FieldSet } from 'airtable'
-import { VercelRequest, VercelResponse } from '@vercel/node'
+import type { VercelRequest, VercelResponse } from '@vercel/node'
 import axios from 'axios'
 import endpoint from 'lib/endpoint'
 
