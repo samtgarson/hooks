@@ -1,25 +1,32 @@
 import { SupabaseClient } from '@supabase/supabase-js'
-import { DataClient } from '../_lib/data-client'
+import { Article, DataClient } from '../_lib/data-client'
 
 const from = jest.fn()
 const insert = jest.fn()
+const select = jest.fn()
+const destroy = jest.fn()
+const inFilter = jest.fn()
+
 const mockSupabase = {
   from: from.mockReturnThis(),
-  insert: insert.mockResolvedValue({})
+  select: select.mockReturnThis(),
+  insert: insert.mockResolvedValue({}),
+  delete: destroy.mockReturnThis(),
+  in: inFilter
 } as unknown as SupabaseClient
 
 describe('data client', () => {
-  let sot: DataClient
+  let sut: DataClient
   const title = 'i am a title'
   const content = 'i am a content'
 
   beforeEach(() => {
-    sot = new DataClient(mockSupabase)
+    sut = new DataClient(mockSupabase)
   })
 
   describe('createArticle', () => {
     it('creates the resource', async () => {
-      await sot.createArticle(title, content)
+      await sut.createArticle(title, content)
 
       expect(from).toHaveBeenCalledWith('articles')
       expect(insert).toHaveBeenCalledWith([{ title, content }], { returning: 'minimal' })
@@ -32,8 +39,69 @@ describe('data client', () => {
       })
 
       it('throws the error', () => {
-        expect(() => sot.createArticle(title, content)).rejects.toEqual(error)
+        return expect(() => sut.createArticle(title, content)).rejects.toEqual(error)
       })
     })
+  })
+
+  describe('getUnprocessedArticles', () => {
+    const articles = ['foo']
+
+    beforeEach(() => {
+      select.mockResolvedValue({ data: articles })
+    })
+
+    it('fetches the unprocessed articles', async () => {
+      await sut.getUnprocessedArticles()
+
+      expect(from).toHaveBeenCalledWith('articles')
+      expect(select).toHaveBeenCalledWith('*')
+    })
+
+    it('returns the articles', async () => {
+      const result = await sut.getUnprocessedArticles()
+
+      expect(result).toEqual(articles)
+    })
+
+    describe('when it fails', () => {
+      const error = new Error('foo')
+      beforeEach(() => {
+        select.mockResolvedValueOnce({ error })
+      })
+
+      it('throws the error', () => {
+        return expect(() => sut.getUnprocessedArticles()).rejects.toEqual(error)
+      })
+    })
+
+  })
+
+  describe('destroyProcessedArticles', () => {
+    const articles = [{ id: 'id1' }, { id: 'id2' }] as Article[]
+
+    beforeEach(() => {
+      inFilter.mockResolvedValue({})
+    })
+
+    it('destroys the articles', async () => {
+      await sut.destroyProcessedArticles(articles)
+
+      expect(from).toHaveBeenCalledWith('articles')
+      expect(destroy).toHaveBeenCalled()
+      expect(inFilter).toHaveBeenCalledWith('id', ['id1', 'id2'])
+    })
+
+    describe('when it fails', () => {
+      const error = new Error('foo')
+      beforeEach(() => {
+        inFilter.mockResolvedValueOnce({ error })
+      })
+
+      it('throws the error', () => {
+        return expect(() => sut.destroyProcessedArticles(articles)).rejects.toEqual(error)
+      })
+    })
+
   })
 })

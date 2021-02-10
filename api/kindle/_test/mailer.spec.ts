@@ -8,10 +8,14 @@ describe('Mailer', () => {
     const mailer = new Mailer()
 
     expect(mailer['transport']).toBeInstanceOf(Mail)
+    expect(mailer['sender']).toEqual(process.env.KINDLE_SENDER)
+    expect(mailer['recipient']).toEqual(process.env.KINDLE_RECIPIENT)
   })
 
   it('sends a mail', () => {
-    const mailer = new Mailer(mockTransport)
+    const sender = "sender"
+    const recipient = "recipient"
+    const mailer = new Mailer(mockTransport, sender, recipient)
     const title = 'i am a title'
     const body = 'i am body'
 
@@ -25,9 +29,9 @@ describe('Mailer', () => {
           filename: title
         }
       ],
-      from: "robot@samgarson.com",
+      from: sender,
       subject: "convert",
-      to: "samtgarson@gmail.com"
+      to: recipient
     })
   })
 })
