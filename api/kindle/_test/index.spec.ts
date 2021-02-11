@@ -15,11 +15,12 @@ const { createArticleMock } =  DataClient as unknown as typeof MockDataClient
 describe('index', () => {
   const body = 'body'
   const title = 'title'
+  const author = 'author'
   const req = {} as VercelRequest
   const res = { end: jest.fn(), json: jest.fn(), status: jest.fn().mockReturnThis() } as unknown as VercelResponse
 
   beforeEach(() => {
-    mockValidator.mockReturnValue({ success: true, body, title })
+    mockValidator.mockReturnValue({ success: true, body, title, author })
   })
 
   it('succeeds', async () => {

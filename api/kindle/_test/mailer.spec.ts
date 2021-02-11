@@ -16,17 +16,15 @@ describe('Mailer', () => {
     const sender = "sender"
     const recipient = "recipient"
     const mailer = new Mailer(mockTransport, sender, recipient)
-    const title = 'i am a title'
-    const body = 'i am body'
+    const path = 'path'
 
-    mailer.sendEmail(title, body)
+    mailer.sendEmail(path)
 
     expect(mockTransport.sendMail).toHaveBeenCalledWith({
       attachments: [
         {
-          content: body,
-          contentType: "text/html",
-          filename: title
+          contentType: "text/plain",
+	  path
         }
       ],
       from: sender,

@@ -23,16 +23,15 @@ export class Mailer {
 		private recipient = recipientEmail
 	) {}
 
-	async sendEmail (title: string, body: string): Promise<void> {
+	async sendEmail (path: string): Promise<void> {
 		return this.transport.sendMail({
 			to: this.recipient,
 			from: this.sender,
 			subject: 'convert',
 			attachments: [
 				{
-					filename: title,
-					content: body,
-					contentType: 'text/html'
+					path,
+					contentType: 'text/plain'
 				}
 			]
 		})

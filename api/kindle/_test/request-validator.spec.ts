@@ -2,17 +2,18 @@ import { VercelRequest } from '@vercel/node'
 import { validateRequest } from '../_lib/request-validator'
 
 describe('validate request', () => {
-  const body = 'body'
+  const content = 'content'
   const title = 'title'
+  const author = 'author'
   const req = {
-    body: { body, title }
+    body: { content, title, author }
   } as VercelRequest
 
   describe('when valid', () => {
-    it('returns the body', () => {
+    it('returns the content', () => {
       const result = validateRequest(req)
 
-      expect(result).toEqual({ success: true, body, title })
+      expect(result).toEqual({ success: true, content, title, author })
     })
   })
 

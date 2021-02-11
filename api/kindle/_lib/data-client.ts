@@ -9,7 +9,7 @@ export interface Article {
 	id: string
 	title: string
 	content: string
-	processed_at: Date
+	author: string
 	created_at: Date
 }
 
