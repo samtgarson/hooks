@@ -24,7 +24,7 @@ describe('Mailer', () => {
       attachments: [
         {
           contentType: "text/plain",
-	  path
+          path
         }
       ],
       from: sender,
