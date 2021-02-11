@@ -6,6 +6,7 @@ import * as MockMailer from '../_lib/__mocks__/mailer'
 import * as ArticleCompiler from '../_lib/article-compiler'
 import * as MockArticleCompiler from '../_lib/__mocks__/article-compiler'
 import { Article } from '../_lib/data-client'
+import { VercelRequest, VercelResponse } from '@vercel/node'
 
 jest.mock('../_lib/data-client')
 jest.mock('../_lib/mailer')
@@ -16,28 +17,63 @@ const { sendEmailMock } =  Mailer as unknown as typeof MockMailer
 const { compileMock } =  ArticleCompiler as unknown as typeof MockArticleCompiler
 
 describe('process', () => {
-  const articles = [] as Article[]
+  const articles = ['foo'] as unknown as Article[]
   const path = 'path'
+  const req = {} as VercelRequest
+  const res = { status: jest.fn().mockReturnThis(), end: jest.fn() } as unknown as VercelResponse
 
   beforeEach(async () => {
-    getUnprocessedArticlesMock.mockResolvedValue(articles)
-    compileMock.mockReturnValue(path)
-    await Process()
+    jest.clearAllMocks()
   })
 
-  it('fetches the unprocessed articles', () => {
-    expect(getUnprocessedArticlesMock).toHaveBeenCalled()
+  describe('when there are articles', () => {
+    beforeEach(async () => {
+      getUnprocessedArticlesMock.mockResolvedValue(articles)
+      compileMock.mockReturnValue(path)
+      await Process(req, res)
+    })
+
+    it('fetches the unprocessed articles', () => {
+      expect(getUnprocessedArticlesMock).toHaveBeenCalled()
+    })
+
+    it('compiles the articles', () => {
+      expect(compileMock).toHaveBeenCalledWith(expect.any(Date), articles)
+    })
+
+    it('sends the email', () => {
+      expect(sendEmailMock).toHaveBeenCalledWith(path)
+    })
+
+    it('destroys the articles', () => {
+      expect(destroyProcessedArticlesMock).toHaveBeenCalledWith(articles)
+    })
+
+    it('ends the request', () => {
+      expect(res.status).toHaveBeenCalledWith(200)
+      expect(res.end).toHaveBeenCalled()
+    })
   })
 
-  it('compiles the articles', () => {
-    expect(compileMock).toHaveBeenCalledWith(expect.any(Date), articles)
-  })
+  describe('when there are no articles', () => {
+    beforeEach(async () => {
+      getUnprocessedArticlesMock.mockResolvedValue([])
+      await Process(req, res)
+    })
 
-  it('sends the email', () => {
-    expect(sendEmailMock).toHaveBeenCalledWith(path)
-  })
+    it('fetches the unprocessed articles', () => {
+      expect(getUnprocessedArticlesMock).toHaveBeenCalled()
+    })
 
-  it('destroys the articles', () => {
-    expect(destroyProcessedArticlesMock).toHaveBeenCalledWith(articles)
+    it('halts after fetching', () => {
+      expect(compileMock).not.toHaveBeenCalled()
+      expect(sendEmailMock).not.toHaveBeenCalled()
+      expect(destroyProcessedArticlesMock).not.toHaveBeenCalled()
+    })
+
+    it('ends the request', () => {
+      expect(res.status).toHaveBeenCalledWith(200)
+      expect(res.end).toHaveBeenCalled()
+    })
   })
 })
