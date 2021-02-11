@@ -4,7 +4,7 @@
   "description": "Webhooks for personal projects",
   "scripts": {
     "lint": "eslint .",
-    "test": "jest",
+    "test": "DOTENV_CONFIG_PATH=.env.example jest",
     "quirrel": "quirrel"
   },
   "repository": {

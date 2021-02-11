@@ -2,7 +2,7 @@ import type { VercelRequest } from "@vercel/node"
 
 type ValidatorResult = {
   success: true
-  body: string
+  content: string
   title: string
   author: string
 } | {
