@@ -4,9 +4,7 @@
   "description": "Webhooks for personal projects",
   "scripts": {
     "lint": "eslint .",
-    "test": "DOTENV_CONFIG_PATH=.env.example jest",
-    "quirrel": "quirrel",
-    "vercel-build": "quirrel ci"
+    "test": "DOTENV_CONFIG_PATH=.env.example jest"
   },
   "repository": {
     "type": "git",
@@ -24,8 +22,7 @@
     "aws-sdk": "^2.840.0",
     "axios": "^0.21.1",
     "html-to-epub": "^0.6.0",
-    "nodemailer": "^6.4.17",
-    "quirrel": "^1.0.4"
+    "nodemailer": "^6.4.17"
   },
   "devDependencies": {
     "@samtgarson/eslint-config": "^2.4.0",
