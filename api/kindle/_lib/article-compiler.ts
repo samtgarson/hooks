@@ -1,9 +1,13 @@
 import { Article } from './data-client'
 import Epub, { Chapter, EPubOptions } from 'html-to-epub'
 
+const outputDir = process.env.KINDLE_OUTPUT_DIR
+
+if (!outputDir) throw new Error('missing KINDLE_OUTPUT_DIR')
+
 export class ArticleCompiler {
 	constructor (
-		private outputDir = process.env.KINDLE_OUTPUT_DIR
+		private outputDir: string = outputDir
 	) {}
 
 	async compile (date: Date, articles: Article[]): Promise<string> {

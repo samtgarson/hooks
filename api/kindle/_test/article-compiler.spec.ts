@@ -8,21 +8,21 @@ jest.mock('html-to-epub')
 
 describe('compile articles', () => {
   const articles = [Fixture1, Fixture2] as unknown as Article[]
+  const date = { toLocaleString: jest.fn(() => 'locale string'), toISOString: jest.fn(() => 'iso stringTfoo') } as unknown as Date
 
   const compiler = new ArticleCompiler('/path')
 
   it('returns the path', async () => {
-    const date = new Date(2021, 1, 10, 13, 15)
     const result = await compiler.compile(date, articles)
 
-    expect(result).toEqual('/path/2021-02-10.txt')
+    expect(result).toEqual('/path/iso string.txt')
   })
 
   it('compiles the articles', () => {
     expect(EPub).toHaveBeenCalledWith({
       author: 'Robot',
-      output: '/path/2021-02-10.txt',
-      title: 'Articles (10 Feb 2021)',
+      output: '/path/iso string.txt',
+      title: 'Articles (locale string)',
       content: [
         { title: Fixture1.title, author: Fixture1.author, data: Fixture1.content },
         { title: Fixture2.title, author: Fixture2.author, data: Fixture2.content }

@@ -9,10 +9,10 @@ const handler: VercelApiHandler = async (req, res) => {
   const result = validateRequest(req)
 
   if (!result.success) return res.status(result.status).json({ error: result.message })
-  const { body, title } = result
+  const { content, title } = result
 
   try {
-    await data.createArticle(title, body)
+    await data.createArticle(title, content)
 
     res.status(201).end()
   } catch (err) {
