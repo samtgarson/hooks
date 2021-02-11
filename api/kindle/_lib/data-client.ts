@@ -18,11 +18,11 @@ export class DataClient {
 		private supabase: SupabaseClient = client
 	) {}
 
-	async createArticle (title: string, content: string): Promise<void> {
+	async createArticle (title: string, content: string, author: string): Promise<void> {
 		const { error } = await this.supabase
 			.from('articles')
 			.insert([
-				{ title, content }
+				{ title, content, author }
 			], { returning: 'minimal' })
 
 		if (error) throw error

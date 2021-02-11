@@ -19,6 +19,7 @@ describe('data client', () => {
   let sut: DataClient
   const title = 'i am a title'
   const content = 'i am a content'
+  const author = 'i am a author'
 
   beforeEach(() => {
     sut = new DataClient(mockSupabase)
@@ -26,10 +27,10 @@ describe('data client', () => {
 
   describe('createArticle', () => {
     it('creates the resource', async () => {
-      await sut.createArticle(title, content)
+      await sut.createArticle(title, content, author)
 
       expect(from).toHaveBeenCalledWith('articles')
-      expect(insert).toHaveBeenCalledWith([{ title, content }], { returning: 'minimal' })
+      expect(insert).toHaveBeenCalledWith([{ title, content, author }], { returning: 'minimal' })
     })
 
     describe('when it fails', () => {
@@ -39,7 +40,7 @@ describe('data client', () => {
       })
 
       it('throws the error', () => {
-        return expect(() => sut.createArticle(title, content)).rejects.toEqual(error)
+        return expect(() => sut.createArticle(title, content, author)).rejects.toEqual(error)
       })
     })
   })

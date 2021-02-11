@@ -26,6 +26,7 @@ describe('index', () => {
   it('succeeds', async () => {
     await Index(req, res)
 
+    expect(createArticleMock).toHaveBeenCalledWith(title, content, author)
     expect(res.status).toHaveBeenCalledWith(201)
     expect(res.end).toHaveBeenCalled()
   })
