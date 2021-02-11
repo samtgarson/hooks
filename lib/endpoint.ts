@@ -6,7 +6,8 @@ export default (handler: VercelApiHandler) => async (req: VercelRequest, res: Ve
     return logger.default(handler)(req, res)
   }
 
-	if (req.body?.secret !== process.env.WEBHOOK_SECRET) return res
+  const secret = req.headers.authorization || req.body?.secret
+	if (secret !== process.env.WEBHOOK_SECRET) return res
     .status(401)
     .send({ error: 'Not Authorized' })
 
