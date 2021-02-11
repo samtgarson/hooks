@@ -15,12 +15,14 @@ export class ArticleCompiler {
 		const title = `Articles (${today})`
 		const content = this.chapters(articles)
 
-		const output =  `${this.outputDir}/${this.fileName(date)}.txt`
+		const output = `${this.outputDir}/${this.fileName(date)}.txt`
+		const tempDir = `${this.outputDir}/temp`
 		const epubOptions: EPubOptions = {
 			title,
 			content,
 			author: 'Robot',
-			output
+			output,
+			tempDir
 		}
 
 		await new Epub(epubOptions)

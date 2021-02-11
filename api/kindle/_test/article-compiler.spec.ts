@@ -22,6 +22,7 @@ describe('compile articles', () => {
     expect(EPub).toHaveBeenCalledWith({
       author: 'Robot',
       output: '/path/iso string.txt',
+      tempDir: '/path/temp',
       title: 'Articles (locale string)',
       content: [
         { title: Fixture1.title, author: Fixture1.author, data: Fixture1.content },

@@ -24,6 +24,7 @@ declare module 'html-to-epub' {
     version?: number
     verbose?: boolean
     content: Chapter[]
+    tempDir?: string
   }
 
   interface EPubConstructor {
