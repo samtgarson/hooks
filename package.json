@@ -5,8 +5,7 @@
   "scripts": {
     "lint": "eslint .",
     "test": "DOTENV_CONFIG_PATH=.env.example jest",
-    "quirrel": "quirrel",
-    "vercel-build": "quirrel ci"
+    "quirrel": "quirrel"
   },
   "repository": {
     "type": "git",
