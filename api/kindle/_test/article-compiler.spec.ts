@@ -30,5 +30,11 @@ describe('compile articles', () => {
       ]
     })
   })
+
+  it('has a default value for output dir', () => {
+    const compiler = new ArticleCompiler()
+
+    expect(compiler).toHaveProperty('outputDir', process.env.KINDLE_OUTPUT_DIR)
+  })
 })
 
