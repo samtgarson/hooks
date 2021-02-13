@@ -9,8 +9,14 @@ jest.mock('html-to-epub')
 describe('compile articles', () => {
   const articles = [Fixture1, Fixture2] as unknown as Article[]
   const date = { toLocaleString: jest.fn(() => 'locale string'), toISOString: jest.fn(() => 'iso stringTfoo') } as unknown as Date
+  const mkdir = jest.fn()
 
-  const compiler = new ArticleCompiler('/path')
+  const compiler = new ArticleCompiler('/path', mkdir)
+
+  it('creates the directories', () => {
+    expect(mkdir).toHaveBeenCalledWith('/path')
+    expect(mkdir).toHaveBeenCalledWith('/path/temp')
+  })
 
   it('returns the path', async () => {
     const result = await compiler.compile(date, articles)

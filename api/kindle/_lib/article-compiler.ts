@@ -1,13 +1,19 @@
 import { Article } from './data-client'
 import Epub, { Chapter, EPubOptions } from 'html-to-epub'
+import { mkdirSync } from 'fs'
 
 const defaultOutputDir = process.env.KINDLE_OUTPUT_DIR
+const defaultMkrDir = (path: string) => mkdirSync(path, { recursive: true })
 
 export class ArticleCompiler {
 	constructor (
-		private outputDir = defaultOutputDir
+		private outputDir = defaultOutputDir,
+		mkDir = defaultMkrDir
 	) {
 		if (outputDir === undefined) throw new Error('missing KINDLE_OUTPUT_DIR')
+
+		mkDir(outputDir)
+		mkDir(`${outputDir}/temp`)
 	}
 
 	async compile (date: Date, articles: Article[]): Promise<string> {
