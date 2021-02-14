@@ -16,18 +16,21 @@ describe('Mailer', () => {
     const sender = "sender"
     const recipient = "recipient"
     const mailer = new Mailer(mockTransport, sender, recipient)
-    const path = 'path'
+    const path = 'path/filename.png'
 
     mailer.sendEmail(path)
 
     expect(mockTransport.sendMail).toHaveBeenCalledWith({
       attachments: [
         {
-          contentType: "text/plain",
+          contentType: "image/png",
+          filename: 'filename.png',
           path
         }
       ],
       from: sender,
+      cc: sender,
+      text: expect.any(String),
       subject: "convert",
       to: recipient
     })

@@ -4,7 +4,7 @@ type ValidatorResult = {
   success: true
   content: string
   title: string
-  author: string
+  author?: string
 } | {
   success: false
   status: 400 | 401
@@ -18,9 +18,9 @@ type RequestBody = {
 }
 
 export const validateRequest = (req: VercelRequest): ValidatorResult => {
-  const { content, title, author } = req.body ?? {} as RequestBody
+  const { content, title, author } = req.body as RequestBody ?? {} as RequestBody
 
-  if (!content || !title || !author) return { success: false, status: 400, message: 'Missing required params' }
+  if (!content || !title) return { success: false, status: 400, message: 'Missing required params' }
 
   return { success: true, content, title, author }
 }

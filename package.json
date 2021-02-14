@@ -5,8 +5,8 @@
   "scripts": {
     "lint": "eslint .",
     "test": "DOTENV_CONFIG_PATH=.env.example jest",
-    "quirrel": "quirrel",
-    "vercel-build": "quirrel ci"
+    "quirrel": "NODE_ENV=developnent quirrel",
+    "vercel-build": "./bin/install-calibre && node_modules/.bin/quirrel ci"
   },
   "repository": {
     "type": "git",
@@ -23,12 +23,14 @@
     "airtable": "^0.10.1",
     "aws-sdk": "^2.840.0",
     "axios": "^0.21.1",
-    "html-to-epub": "^0.6.0",
+    "ebook-convert": "^2.0.1",
+    "node-html-to-image": "^3.1.0",
     "nodemailer": "^6.4.17",
     "quirrel": "1.0.4-fix-94-2"
   },
   "devDependencies": {
     "@samtgarson/eslint-config": "^2.4.0",
+    "@types/inflected": "^1.1.29",
     "@types/jest": "^26.0.20",
     "@types/node": "^14.14.25",
     "@types/nodemailer": "^6.4.0",

@@ -1,5 +1,6 @@
 import { SupabaseClient } from '@supabase/supabase-js'
-import { Article, DataClient } from '../_lib/data-client'
+import { Article } from 'types/digest'
+import { DataClient } from '../_lib/data-client'
 
 const from = jest.fn()
 const insert = jest.fn()

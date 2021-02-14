@@ -1,24 +1,17 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
+import { Article } from 'types/digest'
 
 const supabaseUrl = process.env.SUPABASE_URL
 const supabaseKey = process.env.SUPABASE_KEY
 if (!supabaseKey || !supabaseUrl) throw new Error('Missing supabase credentials')
 const client = createClient(supabaseUrl, supabaseKey)
 
-export interface Article {
-	id: string
-	title: string
-	content: string
-	author: string
-	created_at: Date
-}
-
 export class DataClient {
 	constructor (
 		private supabase: SupabaseClient = client
 	) {}
 
-	async createArticle (title: string, content: string, author: string): Promise<void> {
+	async createArticle (title: string, content: string, author?: string): Promise<void> {
 		const { error } = await this.supabase
 			.from('articles')
 			.insert([

@@ -1,40 +1,47 @@
 import { ArticleCompiler } from '../_lib/article-compiler'
-import { Article } from '../_lib/data-client'
-import Fixture1 from '../../../fixtures/kindle/01.json'
-import Fixture2 from '../../../fixtures/kindle/02.json'
-import EPub from 'html-to-epub'
+import * as CoverGenerator from '../_lib/cover-generator'
+import * as MockCoverGenerator from '../_lib/__mocks__/cover-generator'
+import { Digest } from '../_lib/digest'
 
-jest.mock('html-to-epub')
+jest.mock('ebook-convert')
+jest.mock('../_lib/cover-generator')
+const { generateMock } = CoverGenerator as unknown as typeof MockCoverGenerator
 
 describe('compile articles', () => {
-  const articles = [Fixture1, Fixture2] as unknown as Article[]
-  const date = { toLocaleString: jest.fn(() => 'locale string'), toISOString: jest.fn(() => 'iso stringTfoo') } as unknown as Date
+  const htmlPath = '/foo/path.html'
+  const digest = {
+    html: 'html',
+    title: 'title',
+    humanDateString: 'human date string',
+    writeTo: jest.fn(() => htmlPath)
+  } as unknown as Digest
   const mkdir = jest.fn()
+  const coverPath = 'coverPath'
+  const path = 'tmp/kindle'
 
-  const compiler = new ArticleCompiler('/path', mkdir)
+  let result: string
+
+  beforeEach(async () => {
+    generateMock.mockResolvedValue(coverPath)
+
+    const compiler = new ArticleCompiler(path, mkdir)
+    result = await compiler.compile(digest)
+  })
+
+  it('returns the mobi path', () => {
+    expect(result).toEqual('/foo/path.mobi')
+  })
 
   it('creates the directories', () => {
-    expect(mkdir).toHaveBeenCalledWith('/path')
-    expect(mkdir).toHaveBeenCalledWith('/path/temp')
+    expect(mkdir).toHaveBeenCalledWith(path)
   })
 
-  it('returns the path', async () => {
-    const result = await compiler.compile(date, articles)
-
-    expect(result).toEqual('/path/iso string.txt')
+  it('writes the html', async () => {
+    expect(digest.writeTo).toHaveBeenCalledWith(path)
   })
 
-  it('compiles the articles', () => {
-    expect(EPub).toHaveBeenCalledWith({
-      author: 'Robot',
-      output: '/path/iso string.txt',
-      tempDir: '/path/temp',
-      title: 'Articles (locale string)',
-      content: [
-        { title: Fixture1.title, author: Fixture1.author, data: Fixture1.content },
-        { title: Fixture2.title, author: Fixture2.author, data: Fixture2.content }
-      ]
-    })
+  it('generates a cover', async () => {
+    expect(generateMock).toHaveBeenCalledWith('human date string')
   })
 
   it('has a default value for output dir', () => {

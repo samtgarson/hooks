@@ -1,6 +1,7 @@
 import { CronJob } from "quirrel/vercel"
 import { ArticleCompiler } from "./_lib/article-compiler"
 import { DataClient } from "./_lib/data-client"
+import { Digest } from "./_lib/digest"
 import { Mailer } from "./_lib/mailer"
 
 const data = new DataClient()
@@ -13,7 +14,14 @@ export default CronJob(
   async () => {
     const articles = await data.getUnprocessedArticles()
 
-    const path = await compiler.compile(new Date(), articles)
+    if (!articles.length) {
+      console.log("No articles today")
+      return
+    }
+
+    const digest = new Digest(articles, new Date())
+
+    const path = await compiler.compile(digest)
 
     await mailer.sendEmail(path)
 

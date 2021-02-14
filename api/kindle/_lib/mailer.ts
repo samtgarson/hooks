@@ -1,5 +1,6 @@
 import { SES } from 'aws-sdk'
 import nodemailer from 'nodemailer'
+import { basename } from 'path'
 
 const sesClient = new SES({
 	region: 'eu-west-2',
@@ -26,13 +27,12 @@ export class Mailer {
 	async sendEmail (path: string): Promise<void> {
 		return this.transport.sendMail({
 			to: this.recipient,
+			cc: this.sender,
 			from: this.sender,
 			subject: 'convert',
+			text: "This is an automated message",
 			attachments: [
-				{
-					path,
-					contentType: 'text/plain'
-				}
+				{ path, filename: basename(path), contentType: 'image/png' }
 			]
 		})
 	}

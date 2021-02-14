@@ -1,60 +1,58 @@
-import { Article } from './data-client'
-import Epub, { Chapter, EPubOptions } from 'html-to-epub'
 import { mkdirSync } from 'fs'
+import convert from 'ebook-convert'
+import { CoverGenerator } from './cover-generator'
+import { Digest } from './digest'
 
-const defaultOutputDir = process.env.KINDLE_OUTPUT_DIR
+const defaultOutputDir = process.env.KINDLE_OUTPUT_DIR as string
 const defaultMkrDir = (path: string) => mkdirSync(path, { recursive: true })
+
+const coverGenerator = new CoverGenerator()
+
+if (!defaultOutputDir) throw new Error('missing KINDLE_OUTPUT_DIR')
 
 export class ArticleCompiler {
 	constructor (
-		private outputDir = defaultOutputDir,
+		private outputDir: string = defaultOutputDir,
 		mkDir = defaultMkrDir
 	) {
-		if (outputDir === undefined) throw new Error('missing KINDLE_OUTPUT_DIR')
-
 		mkDir(outputDir)
-		mkDir(`${outputDir}/temp`)
 	}
 
-	async compile (date: Date, articles: Article[]): Promise<string> {
-		const today = this.dateString(date)
-		const title = `Articles (${today})`
-		const content = this.chapters(articles)
+	async compile (digest: Digest): Promise<string> {
+		const path = await digest.writeTo(this.outputDir)
+		const cover = await this.generateCover(digest.humanDateString)
 
-		const output = `${this.outputDir}/${this.fileName(date)}.txt`
-		const tempDir = `${this.outputDir}/temp`
+		return await this.convert(path, cover, digest.title)
+	}
 
-		const epubOptions: EPubOptions = {
-			title,
-			content,
-			author: 'Robot',
-			output,
-			tempDir
-		}
+	private async generateCover (date: string) {
+		return coverGenerator.generate(date)
+	}
 
-		await new Epub(epubOptions)
+	private async convert (input: string, cover: string, title: string) {
+		const output = input.replace(/\.html$/, '.mobi')
+
+		await new Promise<void>((resolve, reject) => {
+			convert({
+				input: JSON.stringify(input),
+				output: JSON.stringify(output),
+				title: JSON.stringify(title),
+				pageBreaksBefore: "'//h:h1'",
+				chapter: "'//h:h1'",
+				insertBlankLine: true,
+				insertBlankLineSize: 1,
+				minimumLineHeight: 180,
+				tocFilter: JSON.stringify('Digest .+'),
+				authors: JSON.stringify('Digest Bot'),
+				cover: JSON.stringify(cover),
+				smartenPunctuation: true,
+				extraCss: JSON.stringify('* { font-family: sans-serif; }')
+			}, (err?: Error) => {
+				if (err) return reject(err)
+				resolve()
+			})
+		})
 
 		return output
-	}
-
-	private dateString (date: Date) {
-		return date.toLocaleString('default', {
-			day: 'numeric',
-			month: 'short',
-			year: 'numeric'
-		})
-	}
-
-	private fileName (date: Date) {
-		const str = date.toISOString()
-		return str.substr(0, str.indexOf('T'))
-	}
-
-	private chapters (articles: Article[]): Chapter[] {
-		return articles.map(article => ({
-			data: article.content,
-			title: article.title,
-			author: article.author
-		}))
 	}
 }

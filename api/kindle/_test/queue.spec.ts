@@ -6,7 +6,8 @@ import * as Mailer from '../_lib/mailer'
 import * as MockMailer from '../_lib/__mocks__/mailer'
 import * as ArticleCompiler from '../_lib/article-compiler'
 import * as MockArticleCompiler from '../_lib/__mocks__/article-compiler'
-import { Article } from '../_lib/data-client'
+import { Article } from 'types/digest'
+import { Digest } from '../_lib/digest'
 
 jest.mock('quirrel/vercel')
 jest.mock('../_lib/data-client')
@@ -39,7 +40,7 @@ describe('queue', () => {
   })
 
   describe('job', () => {
-    const articles = [] as Article[]
+    const articles = [{}] as Article[]
     const path = 'path'
 
     beforeEach(async () => {
@@ -53,7 +54,7 @@ describe('queue', () => {
     })
 
     it('compiles the articles', () => {
-      expect(compileMock).toHaveBeenCalledWith(expect.any(Date), articles)
+      expect(compileMock).toHaveBeenCalledWith(new Digest(articles, expect.any(Date)))
     })
 
     it('sends the email', () => {
