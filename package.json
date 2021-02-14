@@ -6,7 +6,7 @@
     "lint": "eslint .",
     "test": "DOTENV_CONFIG_PATH=.env.example jest",
     "quirrel": "NODE_ENV=developnent quirrel",
-    "vercel-build": "which python && node_modules/.bin/quirrel ci"
+    "vercel-build": "./bin/install-calibre && node_modules/.bin/quirrel ci"
   },
   "repository": {
     "type": "git",
